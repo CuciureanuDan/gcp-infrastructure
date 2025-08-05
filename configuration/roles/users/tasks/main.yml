@@ -1,0 +1,14 @@
+- name: Set the system hostname
+  ansible.builtin.hostname:
+    name: "{{ new_hostname }}"
+
+# available by default, but if the image is changed might not be
+- name: Disallow SSH password authentication
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+    validate: ssh -t -f %s
+  notify:
+    - restart ssh
