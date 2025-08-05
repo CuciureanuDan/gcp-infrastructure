@@ -1,0 +1,18 @@
+- name: Update and upgrade system packages
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: yes
+  
+- name: Check if reboot is required
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: reboot_flag
+
+- name: Reboot the VM
+  ansible.builtin.reboot:
+    msg: "Reboot the vm from ansible"
+  when: reboot_flag.stat.exists
+
+- name: Set the system hostname
+  ansible.builtin.hostname:
+    name: "{{ new_hostname }}"

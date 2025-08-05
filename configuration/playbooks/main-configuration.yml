@@ -1,0 +1,13 @@
+- name: Configuration of the VMs fron GCP
+  hosts: gcp
+  become: true
+  roles:
+    - role: update
+      tags:
+        - update
+    - role: docker-install
+      tags:
+        - docker-install
+    
+     
+
