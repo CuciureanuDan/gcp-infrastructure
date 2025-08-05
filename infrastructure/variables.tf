@@ -13,9 +13,10 @@ variable "machine_type" {
 }
 
 variable "image" {
-    default = "debian-cloud/debian-11"
+    default = "debian-cloud/debian-12"
 }
 
 variable "pubkey" {
-    default = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF3G9dhXQ4ArZ61QHlIDUjePplyGsTDogoeQjaQ9T7PO dancu"
+    # the key must be in this format {ssh_user:key}
+    default = "dancu:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF3G9dhXQ4ArZ61QHlIDUjePplyGsTDogoeQjaQ9T7PO dancu"
 }
