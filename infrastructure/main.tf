@@ -27,6 +27,7 @@ module "vm_1" {
   machine_type = var.machine_type
   zone = var.zone
   image = var.image
+  pubkey = var.pubkey
   subnet_link = module.network.subnet_self_link
 }
 
@@ -36,6 +37,7 @@ module "vm_2" {
   machine_type = var.machine_type
   zone = var.zone
   image = var.image
+  pubkey = var.pubkey
   subnet_link = module.network.subnet_self_link
 }
 
@@ -45,5 +47,6 @@ module "vm_3" {
   machine_type = var.machine_type
   zone = var.zone
   image = var.image
+  pubkey = var.pubkey
   subnet_link = module.network.subnet_self_link
 }

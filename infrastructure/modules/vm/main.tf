@@ -11,11 +11,12 @@ resource "google_compute_instance" "vm" {
 
   network_interface {
     subnetwork = var.subnet_link
-    access_config {}
+    access_config {} # assign external IP
   }
 
   metadata = {
-    ssh-keys = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN44j2SOP4pms4V2x77sTFG9JRTIU8xewmlnCpuWycEO id_gcp"
+    # not recommended because everyone can change the ssh-key
+    ssh-keys = var.pubkey
   }
 }
 
