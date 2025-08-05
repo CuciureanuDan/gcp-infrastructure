@@ -5,6 +5,9 @@
     - role: update
       tags:
         - update
+    - role: users
+      tags:
+        - users
     - role: docker-install
       tags:
         - docker-install

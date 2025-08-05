@@ -1,7 +1,10 @@
 - name: Update and upgrade system packages
   ansible.builtin.apt:
-    update_cache: yes
     upgrade: yes
+  register: result
+  retries: 5
+  delay: 30
+  until: result is succeeded
   
 - name: Check if reboot is required
   ansible.builtin.stat:
@@ -12,7 +15,3 @@
   ansible.builtin.reboot:
     msg: "Reboot the vm from ansible"
   when: reboot_flag.stat.exists
-
-- name: Set the system hostname
-  ansible.builtin.hostname:
-    name: "{{ new_hostname }}"
