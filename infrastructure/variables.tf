@@ -20,3 +20,15 @@ variable "pubkey" {
     # the key must be in this format {ssh_user:key}
     default = "dancu:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF3G9dhXQ4ArZ61QHlIDUjePplyGsTDogoeQjaQ9T7PO dancu"
 }
+
+variable "cloudns_auth_id" {
+    type = string
+    description = "auth id from cloudns"
+    sensitive = true
+}
+
+variable "cloudns_password" {
+    type = string
+    description = "cloudns password"
+    sensitive = true
+}
