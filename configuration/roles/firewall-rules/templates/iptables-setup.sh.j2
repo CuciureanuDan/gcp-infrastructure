@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# to exit the script in case of errors
+set -euo pipefail
+
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+# loopback rule
+iptables -A INPUT -i lo -j ACCEPT
+# docker bridge
+iptables -A INPUT -s 172.17.0.0/16 -j ACCEPT
+
+# permit all traffic between the VMs
+iptables -A INPUT -s {{ vm01 }} -j ACCEPT
+iptables -A INPUT -s {{ vm02 }} -j ACCEPT
+iptables -A INPUT -s {{ vm03 }} -j ACCEPT
+
+# allow ssh access from local machine
+iptables -A INPUT -p tcp -s {{ my_ip }} --dport 22 -j ACCEPT
+
+# enable HTTP/HTTPS from any location
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+iptables -P INPUT DROP
