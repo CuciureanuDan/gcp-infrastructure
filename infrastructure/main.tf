@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/google"
       version = "6.8.0"
     }
+    cloudns = {
+      source  = "Cloudns/cloudns"
+      version = "~>1.0.0"
+    }
   }
 }
 
