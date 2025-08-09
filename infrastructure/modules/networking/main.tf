@@ -48,3 +48,18 @@ resource "google_compute_firewall" "allow_docker_swarm" {
     source_ranges = ["10.0.0.0/24"] #  ["172.16.0.0/12", "192.168.0.0/16"]
 
 }
+
+resource "google_compute_firewall" "allow_wireguard" {
+    name = "${var.vpc_name}-allow-wireguard"
+    network = google_compute_network.vpc.name
+    description = "Allow Wireguard port to a specific tag"
+
+    target_tags = ["wg-server"]
+
+    allow {
+        protocol = "udp"
+        ports = ["51820"]
+    }
+
+    source_ranges = ["0.0.0.0/0"]
+}
