@@ -33,6 +33,7 @@ module "vm_1" {
   image = var.image
   pubkey = var.pubkey
   subnet_link = module.network.subnet_self_link
+  tags = ["wg-server"]
 }
 
 module "vm_2" {
