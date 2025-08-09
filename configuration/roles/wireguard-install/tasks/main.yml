@@ -1,0 +1,69 @@
+- name: Install Wireguard
+  ansible.builtin.package:
+    name: wireguard
+    state: present
+  become: true
+
+- name: Create Wireguard configuration folder
+  ansible.builtin.file:
+    path: /etc/wireguard
+    state: directory
+    mode: '0700'
+  become: true
+
+- name: Generate private key
+  ansible.builtin.shell: wg genkey > /etc/wireguard/privatekey
+  args:
+    creates: /etc/wireguard/privatekey
+  become: true
+
+- name: Set private key permissions
+  ansible.builtin.file:
+    path: /etc/wireguard/privatekey
+    mode: '0600'
+  become: true
+
+- name: Read private key
+  ansible.builtin.slurp:
+    src: /etc/wireguard/privatekey
+  register: private_key_wg
+  become: true
+
+- name: Generate public key
+  ansible.builtin.shell: wg pubkey < /etc/wireguard/privatekey > /etc/wireguard/publickey
+  args:
+    creates: /etc/wireguard/publickey
+  become: true
+
+- name: Read public key
+  ansible.builtin.slurp:
+    src: /etc/wireguard/publickey
+  register: public_key_wg
+  become: true
+    
+- name: Create server configuration
+  ansible.builtin.template:
+    src: wg-server.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    mode: '0600'
+  when: "'vpn_server' in group_names"
+  become: true
+  notify: Restart Wireguard
+  
+- name: Create client configuration
+  ansible.builtin.template:
+    src: wg-client.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    mode: '0600'
+  when: "'vpn_clients' in group_names"
+  become: true
+  notify: Restart Wireguard
+
+- name: Enable IP forwarding on server
+  ansible.builtin.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+    reload: true
+  when: "'vpn_server' in group_names"
+  become: true

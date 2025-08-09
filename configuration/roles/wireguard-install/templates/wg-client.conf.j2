@@ -1,0 +1,9 @@
+[Interface]
+PrivateKey = {{ private_key_wg.content | b64decode | trim }}
+Address = {{ vpn_ip }}/24
+
+[Peer]
+PublicKey = {{ hostvars[groups['vpn_server'][0]].public_key_wg.content | b64decode | trim}}
+Endpoint = {{ hostvars[groups['vpn_server'][0]].ansible_host }}:{{ wg_port }}
+AllowedIPs = {{ vpn_subnet }}
+PersistentKeepalive = 25

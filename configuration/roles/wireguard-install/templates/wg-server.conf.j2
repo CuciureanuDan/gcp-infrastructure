@@ -1,0 +1,11 @@
+[Interface]
+PrivateKey = {{ private_key_wg.content | b64decode | trim }}
+Address = {{ vpn_ip }}/24
+ListenPort = {{ wg_port }}
+SaveConfig = true
+
+{% for host in groups ['vpn_clients'] %}
+[Peer]
+PublicKey = {{ hostvars[host].public_key_wg.content | b64decode | trim}}
+AllowedIPs = {{ hostvars[host].vpn_ip }}/32
+{% endfor %}
