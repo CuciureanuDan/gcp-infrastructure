@@ -67,3 +67,10 @@
     reload: true
   when: "'vpn_server' in group_names"
   become: true
+
+- name: Start and enable WireGuard
+  ansible.builtin.systemd:
+    name: "wg-quick@wg0"
+    state: started
+    enabled: true
+  become: true
