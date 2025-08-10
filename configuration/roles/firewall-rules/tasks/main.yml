@@ -1,0 +1,17 @@
+
+- name: Copy iptables script from template
+  ansible.builtin.template:
+    src: iptables-setup.sh.j2
+    dest: "{{ script_path }}"
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Install iptables
+  ansible.builtin.package:
+    name: iptables
+    state: present
+
+- name: Run the script
+  become: true
+  ansible.builtin.command: "{{ script_path }}"

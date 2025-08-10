@@ -1,0 +1,11 @@
+
+# vms internal ips
+vm01: 10.0.0.5
+vm02: 10.0.0.6
+vm03: 10.0.0.7
+
+# public ip of my machine
+my_ip: 86.127.185.98
+
+# the location of the script
+script_path: /usr/local/bin/iptables-setup.sh

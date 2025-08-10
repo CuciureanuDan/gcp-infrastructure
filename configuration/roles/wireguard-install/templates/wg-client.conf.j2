@@ -1,0 +1,11 @@
+[Interface]
+PrivateKey = {{ private_key_wg.content | b64decode | trim }}
+Address = {{ vpn_ip }}/24
+PostUp = iptables -A INPUT -i %i -p icmp -j ACCEPT
+PostDown = iptables -D INPUT -i %i -p icmp -j ACCEPT
+
+[Peer]
+PublicKey = {{ hostvars[groups['vpn_server'][0]].public_key_wg.content | b64decode | trim}}
+Endpoint = {{ hostvars[groups['vpn_server'][0]].ansible_host }}:{{ wg_port }}
+AllowedIPs = {{ vpn_subnet }}
+PersistentKeepalive = 25

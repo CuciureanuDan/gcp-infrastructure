@@ -1,0 +1,5 @@
+- name: Setup Wireguard VPN on VMs
+  hosts: vpn
+  become: true
+  roles:
+    - wireguard-install

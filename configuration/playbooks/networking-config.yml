@@ -1,0 +1,6 @@
+- name: Config the network
+  hosts: gcp
+  become: true
+  roles:
+    - firewall-rules
+

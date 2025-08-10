@@ -1,0 +1,21 @@
+[Interface]
+PrivateKey = {{ private_key_wg.content | b64decode | trim }}
+Address = {{ vpn_ip }}/24
+ListenPort = {{ wg_port }}
+# allow only icmp, udp packets to wg port, route icmp ports
+PostUp = iptables -A INPUT -i %i -p icmp -j ACCEPT
+PostUp = iptables -A INPUT -p udp --dport 51820 -j ACCEPT
+PostUp = iptables -A FORWARD -i %i -o %i -p icmp -j ACCEPT
+PostUp = iptables -A FORWARD -i %i -o %i -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# remove the rules
+PostDown = iptables -D INPUT -i %i -p icmp -j ACCEPT
+PostDown = iptables -D INPUT -p udp --dport 51820 -j ACCEPT
+PostDown = iptables -D FORWARD -i %i -o %i -p icmp -j ACCEPT
+PostDown = iptables -D FORWARD -i %i -o %i -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+{% for host in groups ['vpn_clients'] %}
+[Peer]
+PublicKey = {{ hostvars[host].public_key_wg.content | b64decode | trim}}
+AllowedIPs = {{ hostvars[host].vpn_ip }}/32
+{% endfor %}
