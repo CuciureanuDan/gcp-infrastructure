@@ -1,0 +1,11 @@
+services:
+  web:
+    image: test-site:latest
+    ports:
+      - "8080:80"
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+      restart_policy:
+        condition: on-failure
