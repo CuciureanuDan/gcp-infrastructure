@@ -74,3 +74,16 @@ resource "google_compute_firewall" "allow_http" {
 
     source_ranges = ["0.0.0.0/0"]
 }
+
+resource "google_compute_firewall" "allow_jenkins_agent" {
+    name = "${var.vpc_name}-allow-jenkins-agent"
+    network = google_compute_network.vpc.name
+    description = "Allow port Jenkins node container"
+
+    allow {
+        protocol = "tcp"
+        ports = ["4444"]
+    }
+
+    source_ranges = ["0.0.0.0/0"]
+}
