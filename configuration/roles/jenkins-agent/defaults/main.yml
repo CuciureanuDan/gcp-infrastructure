@@ -1,0 +1,11 @@
+agent_base_image: "jenkins/ssh-agent:jdk17"
+agent_build_context: "/opt/jenkins-agent-image"
+
+agent_image: "jenkins-agent"
+agent_name: "agent1"
+agent_host_port: 4444
+agent_container_port: 22
+agent_docker_socket: "/var/run/docker.sock"
+
+# Put your key here
+agent_pubkey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF3G9dhXQ4ArZ61QHlIDUjePplyGsTDogoeQjaQ9T7PO"

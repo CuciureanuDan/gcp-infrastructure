@@ -1,0 +1,12 @@
+FROM {{ agent_base_image }}
+
+USER root
+
+# Install Docker and add jenkins user to docker group
+RUN apt-get update && \
+    apt-get install -y docker.io && \
+    groupmod -g {{ docker_sock_gid }} docker && \
+    usermod -aG docker jenkins
+
+# Verify jenkins user is in docker group
+RUN id jenkins

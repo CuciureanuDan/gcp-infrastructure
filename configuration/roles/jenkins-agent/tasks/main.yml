@@ -1,0 +1,48 @@
+- name: Create directory
+  become: true
+  ansible.builtin.file:
+    path: /opt/jenkins-agent-image
+    state: directory
+    mode: "0755"
+
+- name: Get docker.sock gid
+  become: true
+  ansible.builtin.stat:
+    path: /var/run/docker.sock
+  register: docker_sock_stat
+
+- name: Set fact with gid
+  ansible.builtin.set_fact:
+    docker_sock_gid: "{{ docker_sock_stat.stat.gid }}"
+
+- name: Create dockerfile from template
+  become: true
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: /opt/jenkins-agent-image/Dockerfile
+    mode: "0644"
+
+- name: Build docker image
+  become: true
+  community.docker.docker_image:
+    name: "{{ agent_image }}"
+    source: build
+    build:
+      path: /opt/jenkins-agent-image/
+
+- name: Run Jenkins agent container
+  community.docker.docker_container:
+    name: "{{ agent_name }}"
+    image: "{{ agent_image }}"
+    state: started
+    restart_policy: unless-stopped
+    user: "root"
+    published_ports:
+      - "{{ agent_host_port }}:{{ agent_container_port }}"
+    env:
+      JENKINS_AGENT_SSH_PUBKEY: "{{ agent_pubkey }}"
+    volumes:
+      - "{{ agent_docker_socket }}:{{ agent_docker_socket }}"
+
+
+
