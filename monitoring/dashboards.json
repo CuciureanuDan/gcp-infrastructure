@@ -153,6 +153,120 @@
           "legendFormat": "{{instance}} TX"
         }
       ]
+    },
+
+    { "type": "row", "title": "Containers (cAdvisor)", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 30 } },
+
+    {
+      "type": "timeseries",
+      "title": "VPN Latency (ms) – Server to Clients",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 31 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "min": 0
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}",
+            "type": "prometheus"
+          },
+          "expr": "avg by (instance) (probe_icmp_duration_seconds{job=\"vpn_server_to_clients\"} * 1000)",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "VPN Latency (ms) – Client-1 to Client-2",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 31 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "min": 0
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}",
+            "type": "prometheus"
+          },
+          "expr": "avg by (instance) (probe_icmp_duration_seconds{job=\"vpn_client1_to_client2\"} * 1000)",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "VPN Latency (ms) – Client-1 to Server",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 38 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "min": 0
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}",
+            "type": "prometheus"
+          },
+          "expr": "avg by (instance) (probe_icmp_duration_seconds{job=\"vpn_client1_to_server\"} * 1000)",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "VPN Latency (ms) – Client-2 to Server",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 38 },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "min": 0
+        }
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}",
+            "type": "prometheus"
+          },
+          "expr": "avg by (instance) (probe_icmp_duration_seconds{job=\"vpn_client2_to_server\"} * 1000)",
+          "legendFormat": "{{instance}}"
+        }
+      ]
     }
+
+
+
   ]
 }
