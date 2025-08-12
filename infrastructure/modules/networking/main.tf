@@ -43,8 +43,6 @@ resource "google_compute_firewall" "allow_docker_swarm" {
         ports = ["7946", "4789"]
     }
 
-    # target_tags = []    # for future improvement   
-    #
     source_ranges = ["10.0.0.0/24"] #  ["172.16.0.0/12", "192.168.0.0/16"]
 
 }
@@ -59,6 +57,32 @@ resource "google_compute_firewall" "allow_wireguard" {
     allow {
         protocol = "udp"
         ports = ["51820"]
+    }
+
+    source_ranges = ["0.0.0.0/0"]
+}
+
+resource "google_compute_firewall" "allow_http" {
+    name = "${var.vpc_name}-allow-http"
+    network = google_compute_network.vpc.name
+    description = "Allow port for web service"
+
+    allow {
+        protocol = "tcp"
+        ports = ["8080"]
+    }
+
+    source_ranges = ["0.0.0.0/0"]
+}
+
+resource "google_compute_firewall" "allow_jenkins_agent" {
+    name = "${var.vpc_name}-allow-jenkins-agent"
+    network = google_compute_network.vpc.name
+    description = "Allow port Jenkins node container"
+
+    allow {
+        protocol = "tcp"
+        ports = ["4444"]
     }
 
     source_ranges = ["0.0.0.0/0"]

@@ -20,6 +20,12 @@ resource "google_compute_instance" "vm" {
     # not recommended because everyone can change the ssh-key
     ssh-keys = var.pubkey
   }
+
+  # YOU NEED THIS TO PREVENT DISK ATTACHMENT LOOP/ github suggestion
+  lifecycle {
+    ignore_changes = [attached_disk]
+  }
+
 }
 
 resource "google_compute_disk" "data_disk" {

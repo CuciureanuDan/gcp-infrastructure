@@ -1,0 +1,4 @@
+- name: Install Jenkins agent on the swarm manager 
+  hosts: node-1
+  roles:
+    - jenkins-agent
