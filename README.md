@@ -84,3 +84,29 @@ The CI/CD process is implemented with **Jenkins**, with the Jenkins controller r
 2. **Docker Login** – Authenticates with Docker Hub using stored credentials. The image is stored in a private repository.
 3. **Build & Push** – Executes `build.sh` to build the Docker image and push it to Docker Hub.
 4. **Deploy** – Executes `deploy.sh` to deploy the application stack to the Swarm with 3 replicas, one on each node.
+
+## Monitoring
+
+For now the monitoring stack (Prometheus + Grafana) is only on the `monitoring` branch. A new VM was added to GCP within the same VPC and given the `monitoring` network tag. This VM was provisioned specifically for monitoring purposes.
+
+To get access to Prometheus and Grafana UI a new variable: `admin_ip` must be added to `infrastructure/terraform.tfvars` with the current machine IP.
+
+**Node Exporter** (port 9100) must be installed in all the VMs from the cluster. It can be added with: 
+```
+docker run -d   --net="host"   --pid="host"   -v "/:/host:ro,rslave"   quay.io/prometheus/node-exporter:latest   --path.rootfs=/host
+```
+
+**cAdvisor** (port 18080) must be installed to collect metrics from containers. It can be added with: 
+```
+docker run -d \
+  --name=cadvisor \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --publish=18080:18080 \
+  gcr.io/cadvisor/cadvisor:v0.49.1 \
+  --port=18080
+```
+
+**Note 5**: New iptables rules need to allow TCP traffic on port 9100 and 18080 from any host in the `10.0.0.0/24` subnet.
