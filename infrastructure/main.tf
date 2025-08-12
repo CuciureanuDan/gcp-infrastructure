@@ -23,6 +23,7 @@ module "network" {
   subnet_name = "cluster-subnet"
   subnet_cidr = "10.0.0.0/24"
   region = var.region
+  admin_ip = var.admin_ip
 }
 
 module "vm_1" {
@@ -33,7 +34,7 @@ module "vm_1" {
   image = var.image
   pubkey = var.pubkey
   subnet_link = module.network.subnet_self_link
-  tags = ["wg-server"]
+  tags = ["wg-server", "monitored"]
 }
 
 module "vm_2" {
@@ -44,6 +45,7 @@ module "vm_2" {
   image = var.image
   pubkey = var.pubkey
   subnet_link = module.network.subnet_self_link
+  tags = ["monitored"]
 }
 
 module "vm_3" {
@@ -54,4 +56,5 @@ module "vm_3" {
   image = var.image
   pubkey = var.pubkey
   subnet_link = module.network.subnet_self_link
+  tags = ["monitored"]
 }
