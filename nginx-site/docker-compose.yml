@@ -1,6 +1,8 @@
+version: "3.8"
+
 services:
   web:
-    image: test-site:latest
+    image: dancu25/test-site:latest
     ports:
       - "8080:80"
     deploy:
