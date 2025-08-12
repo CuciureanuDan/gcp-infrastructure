@@ -14,3 +14,64 @@ scrape_configs:
         labels: { vm: 'node-2' }
       - targets: ['10.0.0.7:18080']
         labels: { vm: 'node-3' }
+
+  - job_name: 'vpn_server_to_clients'
+    metrics_path: /probe
+    params:
+      module: [icmp_ping]
+    static_configs:
+      - targets:   # clients ip
+        - 10.1.0.2  
+        - 10.1.0.3  
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.0.0.5:9115  # server ip
+
+  - job_name: 'vpn_client1_to_server'
+    metrics_path: /probe
+    params:
+      module: [icmp_ping]
+    static_configs:
+      - targets:
+        - 10.1.0.1  # server VPN IP
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.0.0.6:9115  # Client 1 internal IP
+
+  - job_name: 'vpn_client2_to_server'
+    metrics_path: /probe
+    params:
+      module: [icmp_ping]
+    static_configs:
+      - targets:
+        - 10.1.0.1  # server VPN IP
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.0.0.7:9115  # Client 2 internal IP
+
+  - job_name: 'vpn_client1_to_client2'
+    metrics_path: /probe
+    params:
+      module: [icmp_ping]
+    static_configs:
+      - targets:
+        - 10.1.0.3  # client 2 VPN IP
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.0.0.6:9115  # Client 1 internal IP
