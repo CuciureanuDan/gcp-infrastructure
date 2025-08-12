@@ -1,0 +1,158 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "title": "gcp-cluster",
+  "timezone": "",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-30m", "to": "now" },
+  "annotations": {
+    "list": [
+      {
+        "type": "dashboard",
+        "name": "Annotations & Alerts",
+        "hide": true,
+        "enable": true,
+        "builtIn": 1
+      }
+    ]
+  },
+  "panels": [
+    { "type": "row", "title": "VMs (node_exporter)", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 } },
+
+    {
+      "type": "timeseries",
+      "title": "VM CPU Usage (%)",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 1 },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100 } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" } },
+      "targets": [
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "100 - (avg by (instance)(rate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "VM Memory Usage (%)",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 1 },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100 } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" } },
+      "targets": [
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "VM Disk Used (%) per Mount",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 8 },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100 } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" } },
+      "targets": [
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "100 - (node_filesystem_avail_bytes{fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|overlay\"}) * 100",
+          "legendFormat": "{{instance}} {{mountpoint}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "VM Network (bytes/s) – RX/TX",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 8 },
+      "fieldConfig": { "defaults": { "unit": "Bps" } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" } },
+      "targets": [
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "sum by (instance)(rate(node_network_receive_bytes_total{device!~\"lo\"}[1m]))",
+          "legendFormat": "{{instance}} RX"
+        },
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "sum by (instance)(rate(node_network_transmit_bytes_total{device!~\"lo\"}[1m]))",
+          "legendFormat": "{{instance}} TX"
+        }
+      ]
+    },
+
+    { "type": "row", "title": "Containers (cAdvisor)", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 15 } },
+
+    {
+      "type": "timeseries",
+      "title": "Top 10 Container CPU (%)",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 16 },
+      "fieldConfig": { "defaults": { "unit": "percent", "min": 0, "max": 100 } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" } },
+      "targets": [
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "topk(10, 100 * sum by (name) (rate(container_cpu_usage_seconds_total{image!=\"\"}[1m])) / scalar(sum(machine_cpu_cores)))",
+          "legendFormat": "{{name}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Top 10 Container Memory (working set)",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 16 },
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" } },
+      "targets": [
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "topk(10, container_memory_working_set_bytes{image!=\"\"})",
+          "legendFormat": "{{name}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Container FS Usage (bytes) by Container",
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 23 },
+      "fieldConfig": { "defaults": { "unit": "bytes" } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" } },
+      "targets": [
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "sum by (name) (container_fs_usage_bytes{image!=\"\"})",
+          "legendFormat": "{{name}}"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Container Network (bytes/s) – RX/TX (sum by instance)",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 23 },
+      "fieldConfig": { "defaults": { "unit": "Bps" } },
+      "options": { "legend": { "displayMode": "table", "placement": "bottom" } },
+      "targets": [
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "sum by (instance) (rate(container_network_receive_bytes_total{image!=\"\"}[1m]))",
+          "legendFormat": "{{instance}} RX"
+        },
+        {
+          "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
+          "expr": "sum by (instance) (rate(container_network_transmit_bytes_total{image!=\"\"}[1m]))",
+          "legendFormat": "{{instance}} TX"
+        }
+      ]
+    }
+  ]
+}
