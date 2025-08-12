@@ -87,3 +87,30 @@ resource "google_compute_firewall" "allow_jenkins_agent" {
 
     source_ranges = ["0.0.0.0/0"]
 }
+
+resource "google_compute_firewall" "allow_monitoring_ui" {
+    name = "${var.vpc_name}-monitoring-ui"
+    network = google_compute_network.vpc.name
+    description = "Allow acces to monitoring ui only from a specific adress"
+    direction = "INGRESS"
+    target_tags = ["monitoring"]
+    source_ranges = [var.admin_ip]
+    allow {
+        protocol = "tcp"
+        ports = ["3000", "9090"]
+    }
+
+}
+
+resource "google_compute_firewall" "allow_metrics" {
+    name = "${var.vpc_name}-allow-scrape"
+    network = google_compute_network.vpc.name
+    description = "Allow ports for node exporter and cAdvisor"
+    direction = "INGRESS"
+    target_tags = ["monitored"]
+    source_tags = ["monitoring"]
+    allow {
+        protocol = "tcp"
+        ports = ["9100", "18080"]
+    }
+}
