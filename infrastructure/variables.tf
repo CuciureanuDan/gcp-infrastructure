@@ -32,3 +32,8 @@ variable "cloudns_password" {
     description = "cloudns password"
     sensitive = true
 }
+
+variable "admin_ip" {
+    type = string
+    description = " my PC Public IP to access monitoring UI"
+}
