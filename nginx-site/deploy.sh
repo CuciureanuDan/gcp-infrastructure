@@ -1,2 +1,2 @@
 #!/bin/bash
-docker stack deploy -c docker-compose.yml test-stack
+docker stack deploy --with-registry-auth -c docker-compose.yml test-stack
