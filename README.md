@@ -110,3 +110,19 @@ docker run -d \
 ```
 
 **Note 5**: New iptables rules need to allow TCP traffic on port 9100 and 18080 from any host in the `10.0.0.0/24` subnet.
+
+**Blackbox Exporter** (port 9155) was added to monitor network reachability and performance. In this setup, it is used to measure VPN latency across all possible connections: *server -> clients* , *clients -> server* , *between clients*. The collected metrics are visualized in Grafana. Like the other exporters, Blackbox Exporter requires a dedicated port to be opened in `iptables`.  
+To install and integrate it with Prometheus run this to download and extract the binary:
+```
+wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.27.0/blackbox_exporter-0.27.0.linux-amd64.tar.gz
+
+tar -xzf blackbox_exporter-0.27.0.linux-amd64.tar.gz
+
+sudo mv blackbox_exporter-0.27.0.linux-amd64/blackbox_exporter /usr/local/bin/
+```
+Than place the `config.yml` file into `/etc/blackbox_exporter/config.yml` and create a systemd service file at: `/etc/systemd/system/blackbox_exporter.service`. After this the service must be enabled and started:
+```
+sudo systemctl daemon-reload
+sudo systemctl enable blackbox_exporter
+sudo systemctl start blackbox_exporter
+```
