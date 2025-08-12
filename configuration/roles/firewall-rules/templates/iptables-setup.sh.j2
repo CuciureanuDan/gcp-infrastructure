@@ -17,6 +17,10 @@ iptables -A INPUT -s {{ vm03 }} -j ACCEPT
 # allow ssh access from local machine
 iptables -A INPUT -p tcp -s {{ my_ip }} --dport 22 -j ACCEPT
 
+# allow node exporter port
+sudo iptables -I INPUT -p tcp -s 10.0.0.0/24 --dport 9100 -j ACCEPT
+sudo iptables -I INPUT -p tcp -s 10.0.0.0/24 --dport 18080 -j ACCEPT
+
 # enable HTTP/HTTPS from any location
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
