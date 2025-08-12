@@ -105,12 +105,12 @@ resource "google_compute_firewall" "allow_monitoring_ui" {
 resource "google_compute_firewall" "allow_metrics" {
     name = "${var.vpc_name}-allow-scrape"
     network = google_compute_network.vpc.name
-    description = "Allow ports for node exporter and cAdvisor"
+    description = "Allow ports for node exporter, cAdvisor, and Blackbox exporter"
     direction = "INGRESS"
     target_tags = ["monitored"]
     source_tags = ["monitoring"]
     allow {
         protocol = "tcp"
-        ports = ["9100", "18080"]
+        ports = ["9100", "18080", "9115"]
     }
 }
