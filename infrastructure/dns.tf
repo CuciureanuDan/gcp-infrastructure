@@ -4,11 +4,6 @@ provider "cloudns" {
     password = var.cloudns_password
 }
 
-# resource "cloudns_dns_zone" "cloudns-zone" {
-#     domain = "dancucluster.ip-ddns.com"
-#     type = "master"
-# }
-
 resource "cloudns_dns_record" "node_1" {
     zone = "dancluster.ip-ddns.com"
     name = "node_1"
