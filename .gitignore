@@ -6,3 +6,4 @@ infrastructure/**/*.tfstate.backup
 infrastructure/**/.terraform/
 infrastructure/**/.terraform.lock.hcl
 infrastructure/**/terraform.tfvars
+monitoring/abandonat.prometheus.yml
