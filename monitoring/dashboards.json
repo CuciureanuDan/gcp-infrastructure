@@ -102,8 +102,8 @@
       "targets": [
         {
           "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
-          "expr": "topk(10, 100 * sum by (name) (rate(container_cpu_usage_seconds_total{image!=\"\"}[1m])) / scalar(sum(machine_cpu_cores)))",
-          "legendFormat": "{{name}}"
+          "expr": "topk(10, 100 * sum by (vm, name) (rate(container_cpu_usage_seconds_total{image!=\"\"}[1m])) / scalar(sum(machine_cpu_cores)))",
+          "legendFormat": "{{vm}} / {{name}}"
         }
       ]
     },
@@ -116,8 +116,8 @@
       "targets": [
         {
           "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
-          "expr": "topk(10, container_memory_working_set_bytes{image!=\"\"})",
-          "legendFormat": "{{name}}"
+          "expr": "topk(10, sum by (vm, name) (container_memory_working_set_bytes{image!=\"\"}))",
+          "legendFormat": "{{vm}} / {{name}}"
         }
       ]
     },
@@ -130,8 +130,8 @@
       "targets": [
         {
           "datasource": { "uid": "${DS_PROMETHEUS}", "type": "prometheus" },
-          "expr": "sum by (name) (container_fs_usage_bytes{image!=\"\"})",
-          "legendFormat": "{{name}}"
+          "expr": "sum by (vm, name) (container_fs_usage_bytes{image!=\"\"})",
+          "legendFormat": "{{vm}} / {{name}}"
         }
       ]
     },
